@@ -34,7 +34,7 @@ public class Jetpack : MonoBehaviour
     [SerializeField, Tooltip("到达地面解除滑翔时冻结")] bool switchReachGroundFrozen;
     [SerializeField, Tooltip("Debug文本显示")] bool switchDebugText;
 
-    
+    public bool isResetJetpackParam;
     // Start is called before the first frame update
     void Start()
     {
@@ -50,6 +50,7 @@ public class Jetpack : MonoBehaviour
         //使用喷气背包开始向上位移
         if (isUsingJetpack)
         {
+            isResetJetpackParam = false;
             //喷气背包上升阶段
             if (!isGliding)
             {
@@ -80,18 +81,28 @@ public class Jetpack : MonoBehaviour
                 //即将到达地面解除滑翔状态
                 if (IsComingToGround())
                 {
+                    ResetJetpackParam();
                     Debug.Log("解除滑翔");
-                    isGliding = false;
                     isUsingJetpack = false;
-                    upTime = 0;
-                    Cards.instance.player.GetComponent<SpriteRenderer>().color = Color.white;
                 }
                 //空中向下控制
                 ControllDownGliding();
             }
         }
+        else
+        {
+            if(!isResetJetpackParam)
+                ResetJetpackParam();
+        }
     }
-    
+    void ResetJetpackParam()
+    {
+        upTime = 0;
+        isGliding = false;
+        Cards.instance.player.GetComponent<SpriteRenderer>().color = Color.white;
+        Cards.instance.player.GetComponent<Collider2D>().isTrigger = false;
+        isResetJetpackParam = true;
+    }
     /// <summary>
     /// Debug控制器
     /// </summary>

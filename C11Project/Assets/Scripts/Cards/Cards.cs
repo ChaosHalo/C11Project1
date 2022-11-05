@@ -286,7 +286,7 @@ public class Cards : MonoBehaviour
                 CardsBreak();
                 
                 //使用喷气背包
-                if (curSelectCard == CardsType.jetpack && jetpackRemainCardNum > 0)
+                if (curSelectCard == CardsType.jetpack && jetpackRemainCardNum > 0 && Jetpack.instance.isResetJetpackParam)
                 {
                     jetpackRemainCardNum--;
                     Jetpack.instance.UseJetpack();
@@ -300,7 +300,7 @@ public class Cards : MonoBehaviour
                     Debug.Log("使用时间胶囊");
                 }
                 //使用猛禽俯冲
-                if (curSelectCard == CardsType.raptorSwoop && raptorSwoopRemainCardNum > 0)
+                if (curSelectCard == CardsType.raptorSwoop && raptorSwoopRemainCardNum > 0 && RaptorSwoop.instance.isResetRaptorSwoopParam)
                 {
                     raptorSwoopRemainCardNum--;
                     RaptorSwoop.instance.UseRaptorSwoop();

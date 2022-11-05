@@ -117,7 +117,7 @@ PolygonCollider2D:
       - {x: 2.568762, y: 1.6785101}
       - {x: -2.566517, y: -0.45225465}
       - {x: -2.57, y: -1.66}
-      - {x: -1.4380662, y: -1.1702662}
+      - {x: -0.92722297, y: -1.2203245}
 --- !u!114 &7755916110309206091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6876803ba35184bf9b6a393e33a2f264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tolerance: 0.36
+  tolerance: 0.48
 --- !u!251 &7755916110309206088
 PlatformEffector2D:
   m_ObjectHideFlags: 0

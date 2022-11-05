@@ -20,6 +20,8 @@ public class RaptorSwoop : MonoBehaviour
     public bool isPastOnePlane;
     [Tooltip("正在向前弹射")]
     public bool isEjectionForward;
+    [Tooltip("是否已经重置猛禽俯冲参数")]
+    public bool isResetRaptorSwoopParam;
 
     [Header("猛禽俯冲参数"),Tooltip("猛禽俯冲速度"), Range(100, 2000)]
     public float raptorSwoopSpeed;
@@ -31,6 +33,7 @@ public class RaptorSwoop : MonoBehaviour
     public List<string> destroyTagList;
     [Tooltip("猛禽俯冲时可穿越的平台标签列表")]
     public List<string> passingPlaneTagList;
+
     
     //bool pastDestroyPlane;
     // Start is called before the first frame update
@@ -47,6 +50,7 @@ public class RaptorSwoop : MonoBehaviour
     {
         if (isUsingRaptorSwoop)
         {
+            isResetRaptorSwoopParam = false;
             //地面检测
             OnGroundCheck();
             //弹射控制
@@ -78,9 +82,9 @@ public class RaptorSwoop : MonoBehaviour
             }
         }
         //猛禽俯冲结束后重置参数
-        else
+        else if(!isResetRaptorSwoopParam)
         {
-            ResetParam();
+            ResetResetRaptorSwoopParamParam();
         }
     }
     public void UseRaptorSwoop()
@@ -132,12 +136,13 @@ public class RaptorSwoop : MonoBehaviour
     /// <summary>
     /// 重置参数
     /// </summary>
-    void ResetParam()
+    void ResetResetRaptorSwoopParamParam()
     {
         RaptorSwoopDestroyRange.instance.gameObject.SetActive(false);
         isDestroyEnemyAndTrap = false;
         isEjectionForward = false;
         isPastOnePlane = false;
+        isResetRaptorSwoopParam = true;
     }
     void OnGroundCheck()
     {

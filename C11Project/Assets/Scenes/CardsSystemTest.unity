@@ -274,7 +274,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5684bfcee6e48f469dea170df5e3a3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 50
 --- !u!4 &72141929
 Transform:
   m_ObjectHideFlags: 0
@@ -1250,6 +1250,20 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5032778459005850043, guid: 4febbcce0fd8ac144b79e89dd98295a6, type: 3}
   m_PrefabInstance: {fileID: 5032778458070068527}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &952712347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 952712335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c07c85973f4126d4d90ce22c96a4cbdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deceleration: 1
+  reduceHight: 200
 --- !u!1001 &986605069
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1537,7 +1551,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1361192335
 Transform:
   m_ObjectHideFlags: 0
@@ -1608,9 +1622,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_BindingMode: 1
   m_FollowOffset: {x: 0, y: 0, z: -10}
-  m_XDamping: 1
-  m_YDamping: 1
-  m_ZDamping: 1
+  m_XDamping: 0
+  m_YDamping: 0
+  m_ZDamping: 0
   m_AngularDampingMode: 0
   m_PitchDamping: 0
   m_YawDamping: 0
@@ -2008,7 +2022,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1035808149879775685, guid: 2be7502d80ad4964cb43765d7aacd0d7, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4766558232908130963, guid: 2be7502d80ad4964cb43765d7aacd0d7, type: 3}
       propertyPath: m_RootOrder
@@ -2100,7 +2114,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 56068327083947282, guid: f05ad719897ccdb40b63f445ed999224, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 56068327083947288, guid: f05ad719897ccdb40b63f445ed999224, type: 3}
       propertyPath: speed
@@ -2708,7 +2722,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4398409476336056704, guid: a8599c0a39a9dc945b9a1d1b89da15a1, type: 3}
       propertyPath: specialCardCD
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4398409476336056704, guid: a8599c0a39a9dc945b9a1d1b89da15a1, type: 3}
       propertyPath: raptorSwoopText
@@ -2716,19 +2730,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4398409476336056704, guid: a8599c0a39a9dc945b9a1d1b89da15a1, type: 3}
       propertyPath: specialAndGeneralCD
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4398409476336056704, guid: a8599c0a39a9dc945b9a1d1b89da15a1, type: 3}
       propertyPath: jetpackRemainCardNum
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4398409476336056704, guid: a8599c0a39a9dc945b9a1d1b89da15a1, type: 3}
       propertyPath: timeGelRemainCardNum
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4398409476336056704, guid: a8599c0a39a9dc945b9a1d1b89da15a1, type: 3}
       propertyPath: raptorSwoopRemainCardNum
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4398409476336056715, guid: a8599c0a39a9dc945b9a1d1b89da15a1, type: 3}
       propertyPath: m_Name
