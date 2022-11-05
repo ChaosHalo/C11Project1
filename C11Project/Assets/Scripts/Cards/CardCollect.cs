@@ -15,11 +15,16 @@ public class CardCollect : MonoBehaviour
     {
         
     }
+    /// <summary>
+    /// 按照收集到的卡牌的SpriteRenderer的image名字来存储
+    /// 
+    /// </summary>
+    /// <param name="collision"></param>
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.tag == Cards.instance.playerTag)
         {
-            Cards.instance.AddOneCard(this.name);
+            Cards.instance.AddOneCard(this.transform.GetComponent<SpriteRenderer>().sprite.name);
             Destroy(this.gameObject);
         }
     }

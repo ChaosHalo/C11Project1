@@ -778,6 +778,12 @@ MonoBehaviour:
   timeGelName: timeGel
   raptorSwoopName: raptorSwoop
   curSelectCard: 0
+  specialAndGeneralCD: 0
+  specialCardCD: 0
+  isUsingJetpack: 0
+  isUsingTimeGel: 0
+  isUsingRaptorSwoop: 0
+  isUsingBulletTime: 0
 --- !u!1 &4398409476633202358
 GameObject:
   m_ObjectHideFlags: 0

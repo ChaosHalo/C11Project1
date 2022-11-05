@@ -12,25 +12,34 @@ public class TimeGel : MonoBehaviour
     public Vector3 bubblePos = new Vector3(1,0,0);
     [Tooltip("气泡减速效果,值越大减速效果越明显"),Range(0.1f,1)]
     public float decelerationRatio;
+    [Tooltip("正在使用时间胶囊")]
+    public bool isUsingTimeGel;
 
     public static TimeGel instance;
 
+    [HideInInspector]
+    public List<GameObject> BubbleStayOnMapList = new();
+    
     // Start is called before the first frame update
     void Start()
     {
         if(instance != null)
             Destroy(instance);
         instance = this;
-
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        IsBubbleStayOnMap();
     }
     public void UseTimeGel()
     {
         GameObject newBubble = Instantiate(bubblePrefab,Cards.instance.player.transform.localPosition + bubblePos, Quaternion.identity);
+        BubbleStayOnMapList.Add(newBubble);
+    }
+    void IsBubbleStayOnMap()
+    {
+        isUsingTimeGel = BubbleStayOnMapList.Count > 0;
     }
 }

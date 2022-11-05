@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
     public LayerMask ground;
     public LayerMask upHill;
     public LayerMask downHill;
+    [Header("下降速度")]
+    public float downSpeed;
 
     [Header("debug部分")]
     public bool isOnGround;//在地面
@@ -64,12 +66,13 @@ public class PlayerController : MonoBehaviour
         StatusCheck();
         //Gliding();
     }
-    void downSpeedUp()
+    public void downSpeedUp()
     {
-        if(Input.GetKeyDown(KeyCode.S))
+        if(Input.GetKey(KeyCode.S) && !isOnGround && !isOnDownHill && !isOnUpHill) //cxy
         {
             //canGliding=false;
-            rb.AddForce(new Vector2(0f, -500f));
+            rb.velocity = Vector2.down * downSpeed;
+            //rb.AddForce(new Vector2(0f, -500f));
         }
         /*if(Input.GetKeyUp(KeyCode.S))
         {

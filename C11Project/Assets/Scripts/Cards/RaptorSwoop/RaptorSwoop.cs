@@ -47,24 +47,37 @@ public class RaptorSwoop : MonoBehaviour
     {
         if (isUsingRaptorSwoop)
         {
+            //地面检测
             OnGroundCheck();
-            if (isEjectionForward) EjectionForward();
-            //快速垂直下落
-            RapidDown();
-            //落地时能消灭一定范围内的敌人和陷阱或破坏可破坏的平台
-            DestroyEnemyAndTrap();
+            //弹射控制
+            if (isEjectionForward)
+            {
+                EjectionForward();
+            }
+            //将破环范围置于玩家位置
             if (automaticSetPosition)
             {
                 RaptorSwoopDestroyRange.instance.SetInitPosition();
             }
-
+            //破坏完可破坏地面后落于不可破坏地面
+            //或更换跑道后破坏完可破坏地面后落于不可破坏地面
             if (isOnGround && isPastOnePlane)
             {
                 //短暂停留后向前弹射
                 StartEjectionForward();
                 Invoke("EndRaptorSwoop", ejectionTime);
             }
+            //猛禽俯冲状态：
+            //破坏一切可破坏的平台与敌人和陷阱
+            else
+            {
+                //快速垂直下落
+                RapidDown();
+                //落地时能消灭一定范围内的敌人和陷阱或破坏可破坏的平台
+                DestroyEnemyAndTrap();
+            }
         }
+        //猛禽俯冲结束后重置参数
         else
         {
             ResetParam();
@@ -88,6 +101,7 @@ public class RaptorSwoop : MonoBehaviour
     /// </summary>
     void DestroyEnemyAndTrap()
     {
+        RaptorSwoopDestroyRange.instance.gameObject.SetActive(true);
         isDestroyEnemyAndTrap = true;
     }
     void EjectionForward()
@@ -98,18 +112,29 @@ public class RaptorSwoop : MonoBehaviour
         Cards.instance.player.transform.Translate(Vector2.right * Time.deltaTime * ejectionSpeed);
         //Debug.Log(Cards.instance.player.GetComponent<Rigidbody2D>().velocity);
     }
+    /// <summary>
+    /// 开始弹射
+    /// </summary>
     void StartEjectionForward()
     {
+        RaptorSwoopDestroyRange.instance.gameObject.SetActive(false);
         isEjectionForward = true;
     }
+    /// <summary>
+    /// 结束弹射
+    /// </summary>
     void EndRaptorSwoop()
     {
         isUsingRaptorSwoop = false;
         Debug.Log("结束猛禽俯冲");
         return;
     }
+    /// <summary>
+    /// 重置参数
+    /// </summary>
     void ResetParam()
     {
+        RaptorSwoopDestroyRange.instance.gameObject.SetActive(false);
         isDestroyEnemyAndTrap = false;
         isEjectionForward = false;
         isPastOnePlane = false;
@@ -117,5 +142,6 @@ public class RaptorSwoop : MonoBehaviour
     void OnGroundCheck()
     {
         isOnGround = Cards.instance.player.GetComponent<Collider2D>().IsTouchingLayers(layerGround);
+
     }
 }

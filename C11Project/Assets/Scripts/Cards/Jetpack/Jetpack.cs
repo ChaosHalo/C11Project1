@@ -29,10 +29,12 @@ public class Jetpack : MonoBehaviour
     [SerializeField, Tooltip("玩家起始位置")] float originY;
     [SerializeField, Tooltip("喷气背包最高位置")] float targetY;
     [SerializeField, Tooltip("玩家当前位置")] float curPlayerY;
+    [SerializeField, Tooltip("玩家已上升时间")] float upTime;
     [SerializeField, Tooltip("到达地面射线显示控制开关")] bool switchRayReachGround;
     [SerializeField, Tooltip("到达地面解除滑翔时冻结")] bool switchReachGroundFrozen;
     [SerializeField, Tooltip("Debug文本显示")] bool switchDebugText;
 
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -48,29 +50,45 @@ public class Jetpack : MonoBehaviour
         //使用喷气背包开始向上位移
         if (isUsingJetpack)
         {
-            Debug.Log("正在使用喷气背包上升");
-            UpwardDisplacement();
-            //到达指定位移距离
-            if (IsReachTagetDistance())
+            //喷气背包上升阶段
+            if (!isGliding)
             {
-                Cards.instance.player.GetComponent<Collider2D>().isTrigger = false;
-                Debug.Log("已到达指定高度");
-                isUsingJetpack = false;
-                isGliding = true;
+                //开始计时
+                UpTimer();
+                //正在使用喷气背包上升
+                UpwardDisplacement();
+                Debug.Log("正在使用喷气背包上升");
+                //到达指定位移距离
+                if (IsReachTagetDistance())
+                {
+                    Cards.instance.player.GetComponent<Collider2D>().isTrigger = false;
+                    Debug.Log("已到达指定高度");
+                    isGliding = true;
+                }
+                //已上升足够时间
+                if (IsReachJetpackTime())
+                {
+                    Cards.instance.player.GetComponent<Collider2D>().isTrigger = false;
+                    Debug.Log("已到达指定高度");
+                    isGliding = true;
+                }
             }
-        }
-        
-        //开始滑翔
-        if (isGliding)
-        {
-            //即将到达地面解除滑翔状态
-            if (IsComingToGround())
+            //开始滑翔
+            else
             {
-                Debug.Log("解除滑翔");
-                isGliding = false;
+                Cards.instance.player.GetComponent<SpriteRenderer>().color = Color.red;
+                //即将到达地面解除滑翔状态
+                if (IsComingToGround())
+                {
+                    Debug.Log("解除滑翔");
+                    isGliding = false;
+                    isUsingJetpack = false;
+                    upTime = 0;
+                    Cards.instance.player.GetComponent<SpriteRenderer>().color = Color.white;
+                }
+                //空中向下控制
+                ControllDownGliding();
             }
-            //空中向下控制
-            ControllDownGliding();
         }
     }
     
@@ -124,6 +142,19 @@ public class Jetpack : MonoBehaviour
         return curPlayerY >= targetY;
     }
     /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    bool IsReachJetpackTime()
+    {
+        float Time = upDistance / jetpackSpeed;
+        return Time < upTime;
+    }
+    void UpTimer()
+    {
+        upTime += Time.deltaTime;
+    }
+    /// <summary>
     /// 是否到达离地解除滑翔距离
     /// </summary>
     bool IsComingToGround()
@@ -137,10 +168,11 @@ public class Jetpack : MonoBehaviour
     /// </summary>
     void ControllDownGliding()
     {
-        if (Input.GetKey(controllDownGlidingKeycode))
-        {
-            Cards.instance.player.GetComponent<Rigidbody2D>().velocity = Cards.instance.player.GetComponent<Rigidbody2D>().velocity + Vector2.down * downGlidingSpeed * Time.deltaTime;
-        }
+        PlayerController.instance.downSpeedUp();
+        //if (Input.GetKey(controllDownGlidingKeycode))
+        //{
+        //    Cards.instance.player.GetComponent<Rigidbody2D>().velocity = Cards.instance.player.GetComponent<Rigidbody2D>().velocity + Vector2.down * downGlidingSpeed * Time.deltaTime;
+        //}
     }
     /// <summary>
     /// 显示离地解除滑翔射线
