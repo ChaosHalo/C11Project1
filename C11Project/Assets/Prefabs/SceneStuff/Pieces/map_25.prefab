@@ -112,14 +112,11 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -0.11, y: -0.38}
-      - {x: 0.93, y: -0.5}
+    - - {x: 0.92675984, y: -0.44300735}
       - {x: 1.2604756, y: 0.44619298}
-      - {x: -0.35031033, y: 0.6520786}
+      - {x: 0.022741795, y: 0.60865974}
       - {x: -1.1999999, y: 0.4728577}
-      - {x: -1.29, y: 0.25}
-      - {x: -0.91999996, y: -0.48}
-      - {x: -0.22999999, y: -0.45999998}
+      - {x: -0.9230828, y: -0.44281477}
 --- !u!114 &2375596720344009346
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,7 +129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6876803ba35184bf9b6a393e33a2f264, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tolerance: 0.13
+  tolerance: 0.67
 --- !u!251 &2375596720344009349
 PlatformEffector2D:
   m_ObjectHideFlags: 0

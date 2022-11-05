@@ -27,13 +27,11 @@ public class Bubble : MonoBehaviour
     /// </summary>
     private void OnBecameInvisible()
     {
-        Destroy(this.gameObject);
+        Destroy(gameObject);
+        TimeGel.instance.BubbleStayOnMapList.Remove(gameObject);
     }
     /// <summary>
     /// 减速效果具体实现
-    /// 需要跟雪菲沟通tag还是layer
-    /// 类别名（enermyTag）
-    /// 需要敌人脚本名字(enemy)和速度名(speed)
     /// </summary>
     /// <param name="collision"></param>
     private void OnTriggerEnter2D(Collider2D collision)
@@ -45,6 +43,10 @@ public class Bubble : MonoBehaviour
             //collision.GetComponent<Animator>().speed *= TimeGel.instance.decelerationRatio;
         }
     }
+    /// <summary>
+    /// 减速效果重置
+    /// </summary>
+    /// <param name="collision"></param>
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.tag == Cards.instance.enemyTag)

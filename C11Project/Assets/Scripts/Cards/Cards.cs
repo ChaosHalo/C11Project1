@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
+
 public class Cards : MonoBehaviour
 {
     /// <summary>
@@ -28,7 +30,7 @@ public class Cards : MonoBehaviour
     [Tooltip("陷阱标签")]
     public string trapTag;
 
-    [Header("卡牌数量参数"),Tooltip("最大卡牌携带数量")]
+    [Header("卡牌数量"),Tooltip("最大卡牌携带数量")]
     public int cardMaxNum = 6;
     [Tooltip("喷气背包剩余数量")]
     public int jetpackRemainCardNum;
@@ -48,7 +50,7 @@ public class Cards : MonoBehaviour
 
     [Header("按键设置"), Tooltip("使用技能卡牌的按键设置")]
     public KeyCode specialCardKeyCode;
-    [Tooltip("使用通用效果卡牌的按键设置")]
+    [Tooltip("使用子弹时间卡牌的按键设置")]
     public KeyCode generalCardKeyCode;
 
     [Header("卡牌名称"), Tooltip("喷气背包")]
@@ -59,20 +61,53 @@ public class Cards : MonoBehaviour
     public string raptorSwoopName;
     [Tooltip("当前选中卡牌")]
     public CardsType curSelectCard;
+
+    [Header("卡牌参数"), Tooltip("技能卡牌与子弹时间的使用间隔")]
+    public float specialAndGeneralCD;
+    [Tooltip("技能卡牌使用间隔")]
+    public float specialCardCD;
+    [SerializeField, Tooltip("正在使用喷气背包")]
+    bool isUsingJetpack;
+    [SerializeField, Tooltip("正在使用时间胶囊")]
+    bool isUsingTimeGel;
+    [SerializeField, Tooltip("正在使用猛禽俯冲")]
+    bool isUsingRaptorSwoop;
+    [SerializeField, Tooltip("正在使用子弹时间")]
+    bool isUsingBulletTime;
+
+    float specialCardTime;
+    float specialAndGeneralTime;
     private void Start()
     {
         if (instance != null)
             Destroy(instance);
         instance = this;
-
+        
+        //加载引用物体
         LoadGameObject();
     }
     private void Update()
     {
+        //卡面剩余数量显示
         CardNumUIShow();
-        UpdataCardNum();
+        //限制卡牌剩余数量不超过最大值
+        LimitCardNum();
+        //无卡牌可用时的UI提示
         NoCardsUITip();
+        //获取按键信息使用卡牌
         GetKeyCodeToUseCard();
+        //更新卡牌效果正在使用情况
+        UpdateCardsUsingStatus();
+    }
+    /// <summary>
+    /// 更新卡牌效果正在使用情况
+    /// </summary>
+    void UpdateCardsUsingStatus()
+    {
+        isUsingJetpack = Jetpack.instance.isUsingJetpack;
+        isUsingTimeGel = TimeGel.instance.isUsingTimeGel;
+        isUsingRaptorSwoop = RaptorSwoop.instance.isUsingRaptorSwoop;
+        isUsingBulletTime = GeneralEffect.instance.isUsingBulletTime;
     }
     /// <summary>
     /// 添加一张新的卡牌并将新获得的卡牌作为选中的卡牌
@@ -122,6 +157,9 @@ public class Cards : MonoBehaviour
             if (curSelectCard == CardsType.timeGel) CardsAnimation.instance.animator.Play(CardsAnimation.instance.turnLeftName);
         }
     }
+    /// <summary>
+    /// 加载引用物体
+    /// </summary>
     void LoadGameObject()
     {
         if (playerTag == "") playerTag = "Player";
@@ -133,7 +171,7 @@ public class Cards : MonoBehaviour
     /// <summary>
     /// 限制卡牌剩余数量不超过最大值
     /// </summary>
-    void UpdataCardNum()
+    void LimitCardNum()
     {
         if (jetpackRemainCardNum > cardMaxNum) jetpackRemainCardNum = cardMaxNum;
         if (timeGelRemainCardNum > cardMaxNum) timeGelRemainCardNum = cardMaxNum;
@@ -176,31 +214,49 @@ public class Cards : MonoBehaviour
     {
         if (curRemainCardNum <= 0) image.color = Color.gray;
         else image.color = Color.white;
+        
+
     }
     /// <summary>
     /// 无卡牌可用时的UI提示
     /// </summary>
     void NoCardsUITip()
     {
-        if(jetpackRemainCardNum == 0 && timeGelRemainCardNum == 0 && raptorSwoopRemainCardNum == 0)
+        switch (curSelectCard) 
         {
-            noCardTip.gameObject.SetActive(true);
-            switch (curSelectCard) 
-            {
-                case CardsType.jetpack:
+            case CardsType.jetpack:
+                if(jetpackRemainCardNum == 0)
+                {
                     noCardTip.text = jetpackText;
-                    break;
-                case CardsType.timeGel:
+                    noCardTip.gameObject.SetActive(true);
+                }
+                else
+                {
+                    noCardTip.gameObject.SetActive(false);
+                }
+                break;
+            case CardsType.timeGel:
+                if (timeGelRemainCardNum == 0)
+                {
                     noCardTip.text = timeGelText;
-                    break;
-                case CardsType.raptorSwoop:
+                    noCardTip.gameObject.SetActive(true);
+                }
+                else
+                {
+                    noCardTip.gameObject.SetActive(false);
+                }
+                break;
+            case CardsType.raptorSwoop:
+                if (raptorSwoopRemainCardNum == 0)
+                {
                     noCardTip.text = raptorSwoopText;
-                    break;
-            }
-        }
-        else
-        {
-            noCardTip.gameObject.SetActive(false);
+                    noCardTip.gameObject.SetActive(true);
+                }
+                else
+                {
+                    noCardTip.gameObject.SetActive(false);
+                }
+                break;
         }
     }
     /// <summary>
@@ -208,48 +264,84 @@ public class Cards : MonoBehaviour
     /// </summary>
     void GetKeyCodeToUseCard()
     {
-        //特殊卡牌效果
-        if (Input.GetKeyDown(specialCardKeyCode))
+        //技能卡牌CD
+        if (specialCardTime < specialCardCD)
         {
-            //使用喷气背包
-            if (curSelectCard == CardsType.jetpack && jetpackRemainCardNum > 0)
+            specialCardTime += Time.deltaTime;
+        }
+        //子弹时间和技能卡牌的使用CD
+        if (specialAndGeneralTime < specialAndGeneralCD)
+        {
+            specialAndGeneralTime += Time.deltaTime;
+        }
+        else
+        {
+            //特殊卡牌效果
+            if (Input.GetKeyDown(specialCardKeyCode) && specialCardTime >= specialCardCD)
             {
-                jetpackRemainCardNum--;
-                Jetpack.instance.UseJetpack();
-                Debug.Log("使用喷气背包");
+                //重置卡牌使用CD
+                specialAndGeneralTime = 0;
+                specialCardTime = 0;
+                //卡牌打断逻辑
+                CardsBreak();
+                
+                //使用喷气背包
+                if (curSelectCard == CardsType.jetpack && jetpackRemainCardNum > 0 && Jetpack.instance.isResetJetpackParam)
+                {
+                    jetpackRemainCardNum--;
+                    Jetpack.instance.UseJetpack();
+                    Debug.Log("使用喷气背包");
+                }
+                //使用时间胶囊
+                if (curSelectCard == CardsType.timeGel && timeGelRemainCardNum > 0)
+                {
+                    timeGelRemainCardNum--;
+                    TimeGel.instance.UseTimeGel();
+                    Debug.Log("使用时间胶囊");
+                }
+                //使用猛禽俯冲
+                if (curSelectCard == CardsType.raptorSwoop && raptorSwoopRemainCardNum > 0 && RaptorSwoop.instance.isResetRaptorSwoopParam)
+                {
+                    raptorSwoopRemainCardNum--;
+                    RaptorSwoop.instance.UseRaptorSwoop();
+                    Debug.Log("使用猛禽俯冲");
+                }
             }
-            //使用时间胶囊
-            if (curSelectCard == CardsType.timeGel && timeGelRemainCardNum > 0)
+            //子弹时间
+            if (Input.GetKeyDown(generalCardKeyCode) && !isUsingBulletTime)
             {
-                timeGelRemainCardNum--;
-                TimeGel.instance.UseTimeGel();
-                Debug.Log("使用时间胶囊");
-            }
-            //使用猛禽俯冲
-            if (curSelectCard == CardsType.raptorSwoop && raptorSwoopRemainCardNum > 0)
-            {
-                raptorSwoopRemainCardNum--;
-                RaptorSwoop.instance.UseRaptorSwoop();
-                Debug.Log("使用猛禽俯冲");
+                specialAndGeneralTime = 0;
+                GeneralEffect.instance.UseGeneralEffect();
+                Debug.Log("使用子弹时间");
+                if (curSelectCard == CardsType.jetpack && jetpackRemainCardNum > 0)
+                {
+                    jetpackRemainCardNum--;
+                }
+                if (curSelectCard == CardsType.timeGel && timeGelRemainCardNum > 0)
+                {
+                    timeGelRemainCardNum--;
+                }
+                if (curSelectCard == CardsType.raptorSwoop && raptorSwoopRemainCardNum > 0)
+                {
+                    raptorSwoopRemainCardNum--;
+                }
             }
         }
-        //通用效果
-        if (Input.GetKeyDown(generalCardKeyCode))
+    }
+    //卡牌间的打断逻辑
+    public void CardsBreak()
+    {
+        //喷气背包会打断猛禽俯冲的技能
+        if(curSelectCard == CardsType.jetpack)
         {
-            GeneralEffect.instance.UseGeneralEffect();
-            Debug.Log("使用通用效果");
-            if (curSelectCard == CardsType.jetpack && jetpackRemainCardNum > 0)
-            {
-                jetpackRemainCardNum--;
-            }
-            if (curSelectCard == CardsType.timeGel && timeGelRemainCardNum > 0)
-            {
-                timeGelRemainCardNum--;
-            }
-            if (curSelectCard == CardsType.raptorSwoop && raptorSwoopRemainCardNum > 0)
-            {
-                raptorSwoopRemainCardNum--;
-            }
+            RaptorSwoop.instance.isUsingRaptorSwoop = false;
         }
+        //猛禽俯冲会打断喷气背包的技能
+        if (curSelectCard == CardsType.raptorSwoop)
+        {
+            Jetpack.instance.isUsingJetpack = false;
+        }
+        //打断子弹时间
+        GeneralEffect.instance.isUsingBulletTime = false;
     }
 }

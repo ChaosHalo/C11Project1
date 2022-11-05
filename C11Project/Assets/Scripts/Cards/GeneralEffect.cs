@@ -10,7 +10,10 @@ public class GeneralEffect : MonoBehaviour
     public float decelerationRatio;
     [Tooltip("子弹时间长度,值越大减速效果越明显"), Range(0.1f, 5)]
     public float bulletTime;
-    
+    [Tooltip("正在使用子弹时间")]
+    public bool isUsingBulletTime;
+   
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,8 +28,9 @@ public class GeneralEffect : MonoBehaviour
     {
         
     }
+
     /// <summary>
-    /// 使用通用效果子弹时间，让所有物体减速一段时间
+    /// 使用子弹时间，让所有物体减速一段时间
     /// 目前已经添加的物体：player，enermy
     /// </summary>
     public void UseGeneralEffect()
@@ -36,14 +40,25 @@ public class GeneralEffect : MonoBehaviour
         StartCoroutine(DecelerationBubbleSpeed());
         StartCoroutine(PlayerBulletTime());
         StartCoroutine(EnemyBulletTime());
+        StartCoroutine(IsUsingBulletTime());
     }
+    
     /// <summary>
     /// 重置跳跃次数
-    /// 需要跟xingo沟通
     /// </summary>
     void ResetJumpTime()
     {
         
+    }
+    /// <summary>
+    /// 是否正在使用子弹时间状态更新
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator IsUsingBulletTime()
+    {
+        isUsingBulletTime = true;
+        yield return new WaitForSeconds(bulletTime);
+        isUsingBulletTime = false;
     }
     /// <summary>
     /// 时间胶囊的减速泡的子弹时间
@@ -57,9 +72,7 @@ public class GeneralEffect : MonoBehaviour
     }
     /// <summary>
     /// 敌人的子弹时间协程
-    /// 组件名需要与雪飞沟通
     /// </summary>
-    /// <param name="enemy"></param>
     /// <returns></returns>
     IEnumerator EnemyBulletTime()
     {
@@ -69,7 +82,6 @@ public class GeneralEffect : MonoBehaviour
     }
     /// <summary>
     /// 玩家的子弹时间协程
-    /// 组件名需要与xingo沟通
     /// </summary>
     /// <returns></returns>
     IEnumerator PlayerBulletTime()
