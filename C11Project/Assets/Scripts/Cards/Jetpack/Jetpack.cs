@@ -5,8 +5,8 @@ using UnityEngine;
 public class Jetpack : MonoBehaviour
 {
     public static Jetpack instance;
-    
-    [Tooltip("地面层级")]  
+
+    [Tooltip("地面层级")]
     public LayerMask layerGroundMask;   //需要跟雪菲沟通
 
     [Header("状态参数"), Tooltip("正在滑翔")]
@@ -14,9 +14,9 @@ public class Jetpack : MonoBehaviour
     [Tooltip("正在使用喷气背包")]
     public bool isUsingJetpack;
 
-    [Header("喷气背包参数"), Tooltip("向上位移距离"), Range(1,50)]
+    [Header("喷气背包参数"), Tooltip("向上位移距离"), Range(1, 50)]
     public float upDistance;
-    [Tooltip("喷气背包速度"), Range(1,10)]
+    [Tooltip("喷气背包速度"), Range(1, 10)]
     public float jetpackSpeed;
     [Tooltip("离地解除滑翔距离"), Range(1, 50)]
     public float reachGroundDistance;
@@ -24,6 +24,8 @@ public class Jetpack : MonoBehaviour
     public KeyCode controllDownGlidingKeycode;
     [Tooltip("空中向下控制速度"), Range(50, 2000)]
     public float downGlidingSpeed;
+    [Tooltip("是否已重置喷气背包参数")]
+    public bool isResetJetpackParam;
 
     [Header("Debug参数")]
     [SerializeField, Tooltip("玩家起始位置")] float originY;
@@ -34,11 +36,11 @@ public class Jetpack : MonoBehaviour
     [SerializeField, Tooltip("到达地面解除滑翔时冻结")] bool switchReachGroundFrozen;
     [SerializeField, Tooltip("Debug文本显示")] bool switchDebugText;
 
-    public bool isResetJetpackParam;
+
     // Start is called before the first frame update
     void Start()
     {
-        if(instance != null)
+        if (instance != null)
             Destroy(instance);
         instance = this;
     }
@@ -81,28 +83,27 @@ public class Jetpack : MonoBehaviour
                 //即将到达地面解除滑翔状态
                 if (IsComingToGround())
                 {
-                    ResetJetpackParam();
-                    Debug.Log("解除滑翔");
                     isUsingJetpack = false;
+                    Debug.Log("解除滑翔");
+                    ResetJetpackParam();
                 }
                 //空中向下控制
                 ControllDownGliding();
             }
         }
-        else
+        else if (!isResetJetpackParam)
         {
-            if(!isResetJetpackParam)
-                ResetJetpackParam();
+            ResetJetpackParam();
         }
     }
     void ResetJetpackParam()
     {
-        upTime = 0;
         isGliding = false;
+        upTime = 0;
         Cards.instance.player.GetComponent<SpriteRenderer>().color = Color.white;
-        Cards.instance.player.GetComponent<Collider2D>().isTrigger = false;
         isResetJetpackParam = true;
     }
+
     /// <summary>
     /// Debug控制器
     /// </summary>
@@ -141,7 +142,7 @@ public class Jetpack : MonoBehaviour
     /// </summary>
     void UpwardDisplacement()
     {
-        Cards.instance.player.GetComponent<Rigidbody2D>().velocity = Vector2.up * jetpackSpeed ;
+        Cards.instance.player.GetComponent<Rigidbody2D>().velocity = Vector2.up * jetpackSpeed;
     }
     /// <summary>
     /// 是否飞到指定高度
@@ -171,7 +172,7 @@ public class Jetpack : MonoBehaviour
     bool IsComingToGround()
     {
         RaycastHit2D raycastHit2D = Physics2D.Raycast(Cards.instance.player.transform.position, Vector2.down, reachGroundDistance, layerGroundMask);
-        
+
         return raycastHit2D;
     }
     /// <summary>
@@ -192,7 +193,7 @@ public class Jetpack : MonoBehaviour
     {
         Debug.DrawRay(Cards.instance.player.transform.position, Vector2.down * reachGroundDistance, Color.red);
     }
-    
+
     /// <summary>
     /// 冻结玩家位置
     /// </summary>

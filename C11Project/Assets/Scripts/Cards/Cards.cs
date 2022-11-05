@@ -308,7 +308,7 @@ public class Cards : MonoBehaviour
                 }
             }
             //×Óµ¯Ê±¼ä
-            if (Input.GetKeyDown(generalCardKeyCode))
+            if (Input.GetKeyDown(generalCardKeyCode) && !isUsingBulletTime)
             {
                 specialAndGeneralTime = 0;
                 GeneralEffect.instance.UseGeneralEffect();
